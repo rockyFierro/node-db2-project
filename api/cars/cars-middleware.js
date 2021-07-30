@@ -17,24 +17,41 @@ exports.checkCarId = async (req, res, next) => {
 }
 
 exports.checkCarPayload = (req, res, next) => {
-  const err = { status: 400 };
   const {
-    vin, //required string
-    make, //unique string
-    model, // required string
-    mileage, //required int
-    title, //required string
+    vin,
+    make,
+    model,
+    title,
+    mileage
   } = req.body;
 
-  const required = { vin, make, model, mileage, title };
-
-  for (const field in required) {
-    if (field === undefined) {
-      err.message = `${field} is missing`;
-      next(err);
-    } else {
-      next();
-    }
+  if (!vin) {
+    next({
+      status: 400,
+      message: 'vin is missing',
+    });
+  } else if (!make) {
+    next({
+      status: 400,
+      message: 'make is missing',
+    });
+  } else if (!model) {
+    next({
+      status: 400,
+      message: 'model is missing',
+    });
+  } else if (!title) {
+    next({
+      status: 400,
+      message: 'title is missing',
+    });
+  } else if (!mileage) {
+    next({
+      status: 400,
+      message: 'mileage is missing',
+    });
+  } else {
+    next();
   }
 };
 
@@ -61,11 +78,13 @@ exports.checkVinNumberUnique = async (req, res, next) => {
         .where('vin', vin)
         .first();
 
-    if(taken){
+    if (taken) {
       next({
         status: 400,
-        message: `vin ${vin} already exists`,
+        message: `vin ${req.body.vin} already exists`,
       });
+    } else {
+      next();
     }
   } catch (err) {
     next(err);

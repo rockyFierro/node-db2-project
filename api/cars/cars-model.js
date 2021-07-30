@@ -1,22 +1,20 @@
-const database = require('../../data/db-config')
+const database = require('../../data/db-config');
 
 const getAll = () => {
-  return database
-    .select()
-    .table('cars');
+  return database('cars');
 };
 
 const getById = (id) => {
-  return database
-    .select()
-    .table('cars')
-    .where('id', id);
+  return database('cars')
+    .select('make','model','mileage','title','transmission','vin')
+    .where('id', id)
+    .first();
 };
 
 const create = async (car) => {
-  const [id] = await database
-    .table('cars')
-    .insert(car);
+  const [id] = await
+    database('cars')
+      .insert(car);
   return getById(id);
 };
 

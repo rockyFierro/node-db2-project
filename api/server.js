@@ -11,4 +11,9 @@ server.get('/',
   res.status(200).json({ message: 'api running' });
 });
 
+server.use('*', 
+(req,res, next)=>{
+  next({ status: 404, message: 'not found'});
+})
+
 module.exports = server;
