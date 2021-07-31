@@ -6,7 +6,6 @@ const getAll = () => {
 
 const getById = (id) => {
   return database('cars')
-    .select('make','model','mileage','title','transmission','vin')
     .where('id', id)
     .first();
 };

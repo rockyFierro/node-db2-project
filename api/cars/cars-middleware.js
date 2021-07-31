@@ -4,12 +4,13 @@ const vinCheck = require('vin-validator');
 
 exports.checkCarId = async (req, res, next) => {
   try {
-    const carID = await Cars.getById(req.params.id);
-    if (!carID) {
-      next({
-        status: 400,
-        message: `vim ${req.params.id} is invalid`
-      });
+    const car = await Cars.getById(req.params.id);
+    if (!car) {
+      res.status(404).json({message: `car with id ${req.params.id} is not found`});
+      next();
+    } else {
+      req.car = car;
+      next();
     }
   } catch (err) {
     next(err);
@@ -26,30 +27,20 @@ exports.checkCarPayload = (req, res, next) => {
   } = req.body;
 
   if (!vin) {
-    next({
-      status: 400,
-      message: 'vin is missing',
-    });
+    res.status(400).json({message: 'vin is missing'});
+    next();
   } else if (!make) {
-    next({
-      status: 400,
-      message: 'make is missing',
-    });
+    res.status(400).json({message: 'make is missing'});
+    next();
   } else if (!model) {
-    next({
-      status: 400,
-      message: 'model is missing',
-    });
+    res.status(400).json({message: 'model is missing'});
+    next();
   } else if (!title) {
-    next({
-      status: 400,
-      message: 'title is missing',
-    });
+    res.status(400).json({message: 'title is missing'});
+    next();
   } else if (!mileage) {
-    next({
-      status: 400,
-      message: 'mileage is missing',
-    });
+    res.status(400).json({message: 'mileage is missing'});
+    next();
   } else {
     next();
   }
@@ -60,10 +51,8 @@ exports.checkVinNumberValid = (req, res, next) => {
   const realVin = vinCheck.validate(vin);
 
   if (realVin === false) {
-    next({
-      status: 400,
-      message: `Vin ${vin} is invalid`,
-    });
+    res.status(400).json({message:`vin ${vin} is invalid`});
+    next();
   } else {
     next();
   }

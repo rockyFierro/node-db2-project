@@ -13,6 +13,12 @@ router.get('/',
     }
   });
 
+router.get('/:id',
+  middleware.checkCarId,
+  async (req, res, next) => {
+    res.json(req.car);
+  });
+
 router.post('/',
   [
     middleware.checkCarPayload,
@@ -21,7 +27,6 @@ router.post('/',
   ],
   async (req, res, next) => {
     try {
-      console.log('hey');
       const data = await Cars.create(req.body);
       res.status(201).json(data);
     } catch (error) {
